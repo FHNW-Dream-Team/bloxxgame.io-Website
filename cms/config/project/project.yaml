@@ -1,0 +1,28 @@
+dateModified: 1634515004
+email:
+  fromEmail: admin@local.test
+  fromName: Bloxxgame
+  replyToEmail: null
+  template: ''
+  transportSettings:
+    command: ''
+  transportType: craft\mail\transportadapters\Sendmail
+meta:
+  __names__:
+    7c546c7a-1250-4414-9854-9fbe4ad09ee3: Common # Common
+    8cdf8394-93d5-40ac-b7e2-12bb02439252: Bloxxgame # Bloxxgame
+    72440849-a911-42c5-a405-f556f40226ca: 'Public Schema' # Public Schema
+    b4cb7d36-89b6-4afd-bb7c-189850e4f7ce: Bloxxgame # Bloxxgame
+system:
+  edition: pro
+  live: true
+  name: Bloxxgame
+  retryDuration: null
+  schemaVersion: 3.7.8
+  timeZone: Europe/Zurich
+users:
+  allowPublicRegistration: false
+  defaultGroup: null
+  photoSubpath: null
+  photoVolumeUid: null
+  requireEmailVerification: true

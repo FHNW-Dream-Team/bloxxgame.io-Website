@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.6'
 
 services:
   pwa:
@@ -7,6 +7,102 @@ services:
       target: development
     tty: true # https://github.com/facebook/create-react-app/issues/8688
     ports:
-      - '443:3000'
+      - '8443:3000'
     volumes:
       - ./pwa:/app:cached
+
+  cms:
+    image: craftcms/nginx:8.0-dev
+    ports:
+      - '8080:8080'
+    environment:
+      XDEBUG_CONFIG: client_host=host.docker.internal
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./cms:/app
+#      - ./cms:/app:cached
+#      - craft-storage-dev:/app/storage:delegated
+#      - ./cms/storage/logs:/app/storage/logs:delegated
+#      - ./cms/storage/runtime/compiled_templates:/app/storage/runtime/compiled_templates:delegated
+#      - ./cms/vendor:/app/vendor:delegated
+#      - craft-cpresources-dev:/app/web/cpresources:delegated
+
+  console:
+    image: craftcms/cli:8.0-dev
+    environment:
+      XDEBUG_CONFIG: client_host=host.docker.internal
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./cms:/app
+#      - ./cms:/app:cached
+#      - craft-storage-dev:/app/storage:delegated
+#      - ./cms/storage/logs:/app/storage/logs:delegated
+#      - ./cms/storage/runtime/compiled_templates:/app/storage/runtime/compiled_templates:delegated
+#      - ./cms/vendor:/app/vendor:delegated
+#      - craft-cpresources-dev:/app/web/cpresources:delegated
+    command: php craft queue/listen
+
+  mariadb:
+    image: mariadb:latest
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: [ 'CMD', 'mysqladmin', 'ping', '--user=dbUser', '--password=dbPassword' ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - db-mariadb:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: dbAdminPassword
+      MYSQL_USER: dbUser
+      MYSQL_PASSWORD: dbPassword
+      MYSQL_DATABASE: dbApp
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - '8081:80'
+    environment:
+      UPLOAD_LIMIT: 100M
+      PMA_HOST: db
+
+  redis:
+    image: redis:5-alpine
+    command: redis-server --appendonly yes --requirepass redisPassword
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+    volumes:
+      - redis-dev:/data
+
+  phpredisadmin:
+    image: erikdubbelboer/phpredisadmin:latest
+    environment:
+      REDIS_1_HOST: redis
+      REDIS_1_NAME: redisApp
+      REDIS_1_AUTH: redisPassword
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - '8082:80'
+
+volumes:
+  db-mariadb:
+  redis-dev:
+  craft-cpresources-dev:
+  craft-storage-dev:

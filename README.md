@@ -39,9 +39,13 @@ Give examples
 
 ### Installing
 
+https://localhost:8443/
+
+http://localhost:8080/admin
+
 Inside the CraftCMS PHP container run:
 ```shell
-./craft install --language de-CH --site-name 'Blueprint' --site-url \$SITE_URL --username admin --email admin@local.test --password 'password'
+./craft install --language de-CH --site-name 'Bloxxgame' --site-url \$SITE_URL --username admin --email admin@local.test --password 'password'
 ```
 
 A step by step series of examples that tell you how to get a development env running

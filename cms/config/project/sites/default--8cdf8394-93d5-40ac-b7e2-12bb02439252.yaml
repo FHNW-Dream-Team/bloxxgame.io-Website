@@ -1,0 +1,8 @@
+baseUrl: $PRIMARY_SITE_URL
+handle: default
+hasUrls: true
+language: de-CH
+name: Bloxxgame
+primary: true
+siteGroup: b4cb7d36-89b6-4afd-bb7c-189850e4f7ce # Bloxxgame
+sortOrder: 1
